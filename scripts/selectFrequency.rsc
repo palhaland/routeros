@@ -4,7 +4,7 @@
 # Enter the name of the actual wireless interface, not a virtual one
   :local wlanInterface [/interface wireless find name="wlan1-LAN"]
   :local wlanWanIF [/interface wireless find name="wlan2-WAN"]
-  :local executeBackground true
+  :local executeBackground false
   :if ($wlanInterface = "") do={
     :log error "Need to set a interface name"
   }
@@ -50,10 +50,12 @@
 # For each element in the connect list, check if it match the SSID
       :foreach el in=$connectList do={
         :if (($el->"ssid") = $ssid) do={
-          :if ($currentFrequency != $freq && $strongestRssi < $rssi) do={
-            :set strongestFreq $freq
+          :if ($strongestRssi < $rssi) do={
             :set strongestRssi $rssi
             :set strongestSsid $el
+            :if ($currentFrequency != $freq) do={
+              :set strongestFreq $freq
+            }
           }
         }
       }
